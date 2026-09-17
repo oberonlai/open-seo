@@ -7,6 +7,7 @@ import {
   authRedirectSearchSchema,
   useAuthPageState,
 } from "@/client/features/auth/AuthPage";
+import { useT } from "@/client/i18n";
 import { getFieldError, getFormError } from "@/client/lib/forms";
 import { captureClientEvent } from "@/client/lib/posthog";
 import { authClient } from "@/lib/auth-client";
@@ -24,6 +25,7 @@ export const Route = createFileRoute("/_auth/sign-in")({
 });
 
 function SignInPage() {
+  const t = useT();
   const search = Route.useSearch();
   const navigate = useNavigate();
   const { redirectTo, oauthQuery, isHostedMode } = useAuthPageState(
@@ -154,7 +156,7 @@ function SignInPage() {
       {!showEmailForm ? (
         <>
           <AuthMethodChooser
-            googleLabel="Continue with Google"
+            googleLabel={t("auth.continueWithGoogle")}
             disabled={!isHostedMode}
             isBusy={isStartingGoogle}
             onContinueWithGoogle={() => {

@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { useT } from "@/client/i18n";
 
 export function OnboardingCard({
   step,
@@ -9,6 +10,7 @@ export function OnboardingCard({
   total: number;
   children: ReactNode;
 }) {
+  const t = useT();
   return (
     <div className="w-full max-w-xl py-8">
       <div className="flex items-center justify-center gap-2 text-sm font-semibold">
@@ -19,11 +21,11 @@ export function OnboardingCard({
         <div
           className="mb-8 flex gap-2"
           role="progressbar"
-          aria-label="Onboarding progress"
+          aria-label={t("onboarding.progress")}
           aria-valuemin={1}
           aria-valuemax={total}
           aria-valuenow={step}
-          aria-valuetext={`Step ${step} of ${total}`}
+          aria-valuetext={t("onboarding.stepOf", { step, total })}
         >
           {Array.from({ length: total }, (_, index) => (
             <span

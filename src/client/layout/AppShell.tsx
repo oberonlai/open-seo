@@ -13,6 +13,7 @@ import { BILLING_ROUTE } from "@/shared/billing";
 import { getSeoApiKeyStatus } from "@/serverFunctions/config";
 import { getProjects } from "@/serverFunctions/projects";
 import { getLastProjectId } from "@/client/lib/active-project";
+import { useT } from "@/client/i18n";
 
 const DATAFORSEO_HELP_PATH = "/help/dataforseo-api-key";
 
@@ -169,12 +170,13 @@ function MobileTopBar({
   drawerOpen: boolean;
   onOpenDrawer: () => void;
 }) {
+  const t = useT();
   return (
     <div className="flex shrink-0 items-center gap-1 border-b border-base-300 bg-base-100 px-2 py-1.5 md:hidden">
       <button
         type="button"
         className="btn btn-square btn-ghost btn-sm"
-        aria-label="Toggle sidebar"
+        aria-label={t("common.openMenu")}
         aria-expanded={drawerOpen}
         onClick={onOpenDrawer}
       >

@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { AlertTriangle, ExternalLink } from "lucide-react";
 import { Sidebar } from "@/client/components/Sidebar";
 import { dataforseoHelpLinkOptions } from "@/client/navigation/items";
+import { useT } from "@/client/i18n";
 
 function SeoApiStatusBanners({
   shouldShowSeoApiWarning,
@@ -11,6 +12,16 @@ function SeoApiStatusBanners({
   shouldShowSeoApiWarning: boolean;
   seoApiKeyStatusError: boolean;
 }) {
+  const t = useT();
+  const helpLink = (
+    <Link
+      {...dataforseoHelpLinkOptions}
+      className="link link-primary font-medium"
+    >
+      {t("shell.seoWarningHelp")}
+    </Link>
+  );
+
   return (
     <>
       {shouldShowSeoApiWarning ? (
@@ -19,15 +30,9 @@ function SeoApiStatusBanners({
             <div className="alert alert-warning">
               <AlertTriangle className="size-4 shrink-0" />
               <span className="text-sm">
-                Setup needed: add your DataForSEO API key to use OpenSEO
-                features. See the quick steps on the{" "}
-                <Link
-                  {...dataforseoHelpLinkOptions}
-                  className="link link-primary font-medium"
-                >
-                  help page
-                </Link>
-                .
+                {t("shell.seoWarning").split("{helpLink}")[0]}
+                {helpLink}
+                {t("shell.seoWarning").split("{helpLink}")[1] ?? ""}
               </span>
             </div>
           </div>
@@ -40,15 +45,9 @@ function SeoApiStatusBanners({
             <div className="alert alert-info">
               <AlertTriangle className="size-4 shrink-0" />
               <span className="text-sm">
-                We could not verify your DataForSEO setup. If features are not
-                working, check the setup steps on the{" "}
-                <Link
-                  {...dataforseoHelpLinkOptions}
-                  className="link link-primary font-medium"
-                >
-                  help page
-                </Link>
-                .
+                {t("shell.seoStatusError").split("{helpLink}")[0]}
+                {helpLink}
+                {t("shell.seoStatusError").split("{helpLink}")[1] ?? ""}
               </span>
             </div>
           </div>
@@ -67,13 +66,14 @@ function MobileSidebarDrawer({
   projectId: string | null;
   onClose: () => void;
 }) {
+  const t = useT();
   if (!open) return null;
 
   return (
     <div className="fixed inset-0 z-50 md:hidden">
       <button
         type="button"
-        aria-label="Close sidebar"
+        aria-label={t("common.closeSidebar")}
         className="absolute inset-0 bg-black/45"
         onClick={onClose}
       />
@@ -91,6 +91,7 @@ const MissingSeoSetupModal = React.forwardRef<
     onClose: () => void;
   }
 >(({ isOpen, onClose }, ref) => {
+  const t = useT();
   if (!isOpen) return null;
 
   return (
@@ -113,27 +114,27 @@ const MissingSeoSetupModal = React.forwardRef<
               id="dataforseo-setup-title"
               className="text-lg font-semibold text-base-content"
             >
-              One quick setup step
+              {t("shell.setupTitle")}
             </h2>
             <p
               id="dataforseo-setup-description"
               className="text-sm text-base-content/75"
             >
-              Add your DataForSEO API key to start using OpenSEO.
+              {t("shell.setupBody")}
             </p>
           </div>
         </div>
 
         <div className="mt-5 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
           <button type="button" className="btn btn-ghost" onClick={onClose}>
-            Dismiss
+            {t("common.dismiss")}
           </button>
           <Link
             {...dataforseoHelpLinkOptions}
             className="btn btn-primary"
             onClick={onClose}
           >
-            Open setup guide
+            {t("shell.openSetupGuide")}
             <ExternalLink className="size-4" />
           </Link>
         </div>

@@ -15,6 +15,7 @@ import { DefaultCatchBoundary } from "@/client/components/DefaultCatchBoundary";
 import { captureGoogleLinkError } from "@/client/features/integrations/googleLinkError";
 import { ExportToSheetsModal } from "@/client/components/table/ExportToSheetsModal";
 import { themePreferenceInitScript } from "@/client/lib/theme";
+import { initDocumentLocale } from "@/client/i18n";
 import {
   identifyAnalyticsUser,
   resetAnalyticsUser,
@@ -127,11 +128,14 @@ function PostHogBootstrap() {
 }
 
 function RootDocument({ children }: { children: React.ReactNode }) {
+  React.useEffect(() => {
+    initDocumentLocale();
+  }, []);
   const showDevtools =
     import.meta.env.DEV && import.meta.env.VITE_SHOW_DEVTOOLS !== "false";
 
   return (
-    <html suppressHydrationWarning translate="no">
+    <html lang="en" suppressHydrationWarning translate="no">
       <head>
         <script
           dangerouslySetInnerHTML={{ __html: themePreferenceInitScript }}
