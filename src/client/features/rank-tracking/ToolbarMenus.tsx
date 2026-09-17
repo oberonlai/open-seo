@@ -1,4 +1,5 @@
 import { useState, type ReactNode } from "react";
+import { useT } from "@/client/i18n";
 import {
   ChevronDown,
   Copy,
@@ -100,16 +101,17 @@ export function MoreMenu({
   metricsRefreshing: boolean;
   hasData: boolean;
 }) {
+  const t = useT();
   return (
     <ToolbarMenu
       icon={<MoreHorizontal className="size-4" />}
-      title="More actions"
+      title={t("rankTracking.moreActions")}
     >
       {!checkDisabled && (
         <MenuItem
           icon={<Play className="size-3.5" />}
-          label={checkBusy ? "Running..." : "Check rankings"}
-          description="Fetch current Google positions"
+          label={checkBusy ? t("common.loading") : t("rankTracking.checkRankings")}
+          description={t("rankTracking.fetchPositions")}
           onClick={onCheckNow}
           disabled={checkBusy}
         />
@@ -120,8 +122,8 @@ export function MoreMenu({
             className={`size-3.5 ${metricsRefreshing ? "animate-spin" : ""}`}
           />
         }
-        label={metricsRefreshing ? "Refreshing..." : "Update keyword stats"}
-        description="Volume, difficulty & CPC — not rankings"
+        label={metricsRefreshing ? t("common.updating") : t("rankTracking.updateKeywordStats")}
+        description={t("rankTracking.updateMetricsHint")}
         onClick={onRefreshMetrics}
         disabled={metricsRefreshing || !hasData}
       />
@@ -140,23 +142,24 @@ export function ExportMenu({
   onCopyKeywords: () => void;
   hasData: boolean;
 }) {
+  const t = useT();
   return (
-    <ToolbarMenu label="Export" icon={<Download className="size-3.5" />}>
+    <ToolbarMenu label={t("rankTracking.export")} icon={<Download className="size-3.5" />}>
       <MenuItem
         icon={<Sheet className="size-3.5" />}
-        label="Export to Sheets"
+        label={t("common.exportSheets")}
         onClick={onExportToSheets}
         disabled={!hasData}
       />
       <MenuItem
         icon={<FileDown className="size-3.5" />}
-        label="Export CSV"
+        label={t("common.exportCsv")}
         onClick={onExport}
         disabled={!hasData}
       />
       <MenuItem
         icon={<Copy className="size-3.5" />}
-        label="Copy keywords"
+        label={t("rankTracking.copyKeywords")}
         onClick={onCopyKeywords}
         disabled={!hasData}
       />

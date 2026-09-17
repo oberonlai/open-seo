@@ -15,6 +15,8 @@ import {
 } from "@/server/lib/dataforseo";
 import { asAppError } from "@/server/lib/errors";
 import { shouldCaptureAppErrorCode } from "@/shared/error-codes";
+import { getOptionalEnvValue } from "@/server/lib/runtime-env";
+import { isDataforseoAutoSpendDisabled } from "@/shared/dataforseo-auto-spend";
 
 // Daily cadence: fresh numbers each visit without per-visit spend; a dormant
 // project costs nothing because refreshes are visit-triggered.
@@ -255,6 +257,15 @@ async function ensureBacklinkSnapshot(input: {
 }): Promise<DashboardBacklinkSummary | null> {
   const { projectId, domain } = input;
   if (!domain) return null;
+
+  // Spend freeze: never hit DataForSEO from a dashboard visit.
+  if (
+    isDataforseoAutoSpendDisabled(
+      await getOptionalEnvValue("OPENSEO_DATAFORSEO_AUTO_SPEND_DISABLED"),
+    )
+  ) {
+    return getBacklinkSummary(projectId, domain);
+  }
 
   const latest =
     await BacklinkSnapshotRepository.getLatestForProject(projectId);

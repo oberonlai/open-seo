@@ -7,9 +7,13 @@ import { resolveUserContextFromHeaders } from "@/middleware/ensure-user/resolve"
 import { ProjectRepository } from "@/server/features/projects/repositories/ProjectRepository";
 import { SamSessionRepository } from "@/server/features/sam/SamSessionRepository";
 import { runScheduledRankChecks } from "@/server/features/rank-tracking/services/scheduledRankChecks";
+import { isDataforseoAutoSpendDisabled } from "@/shared/dataforseo-auto-spend";
 import { reconcileStaleAudits } from "@/server/features/audit/services/auditReconciler";
 import { getOrCreateOrganizationCustomer } from "@/server/billing/subscription";
-import { isHostedServerAuthMode } from "@/server/lib/runtime-env";
+import {
+  getEnvValueSync,
+  isHostedServerAuthMode,
+} from "@/server/lib/runtime-env";
 import { getAuthMode, isHostedAuthMode } from "@/lib/auth-mode";
 import {
   createOpenSeoOAuthProvider,
@@ -197,8 +201,20 @@ export default {
       watchdogError = err;
       console.error("[cron] Stale-audit reconcile failed:", err);
     }
-    // Scope a per-request Postgres client for the cron run (no-op in D1 mode).
-    await withPgClient(() => runScheduledRankChecks(env));
+    // Spend freeze: skip DataForSEO scheduled rank checks. Stale-audit
+    // reconcile above is local/workflow-only and stays enabled.
+    const autoSpendDisabled = isDataforseoAutoSpendDisabled(
+      getEnvValueSync(env, "OPENSEO_DATAFORSEO_AUTO_SPEND_DISABLED"),
+    );
+    if (autoSpendDisabled) {
+      console.log({
+        event: "rank_tracking_scheduler_skipped",
+        reason: "OPENSEO_DATAFORSEO_AUTO_SPEND_DISABLED",
+      });
+    } else {
+      // Scope a per-request Postgres client for the cron run (no-op in D1 mode).
+      await withPgClient(() => runScheduledRankChecks(env));
+    }
     if (watchdogError) throw watchdogError;
   },
 };

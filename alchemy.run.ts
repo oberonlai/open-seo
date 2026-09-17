@@ -293,6 +293,10 @@ const dataEnv = {
   // Alchemy reconciles worker vars on every deploy, so the telemetry opt-out
   // must live in the env file — a dashboard-set var would be wiped.
   OPENSEO_TELEMETRY_DISABLED: optionalVar("OPENSEO_TELEMETRY_DISABLED"),
+  // Spend freeze: skip cron rank checks + dashboard auto backlink snapshot.
+  OPENSEO_DATAFORSEO_AUTO_SPEND_DISABLED: optionalVar(
+    "OPENSEO_DATAFORSEO_AUTO_SPEND_DISABLED",
+  ),
 };
 
 export default Alchemy.Stack(

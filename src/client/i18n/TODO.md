@@ -20,6 +20,13 @@ Shipped in deep SEO feature pass (zh-TW):
 - GSC: connection card titles/toasts/errors, re-engagement modal chrome
 - Dashboard cards: Search performance, Site audit, Backlink pulse, GA4 organic traffic metrics
 
+Shipped in spend-freeze / low-spend + i18n pass:
+
+- Rank tracking config modal (labels, helpers; defaults: manual / mobile / depth 20)
+- Rank tracking toolbar menus, Latest/History toggle, search targeting, filter panel titles
+- Backlinks one-per-domain / all-links toggle
+- Shared `table.*` / `severity.*` keys added for further wiring
+
 Still English (follow-up):
 
 - Deeper table chrome / filter panels / bulk bars across features (partially done)
@@ -27,7 +34,7 @@ Still English (follow-up):
 - Auth form field labels / validation copy on sign-in & sign-up routes (chooser is done)
 - Project switcher empty/create copy, dashboard onboarding checklist body
 - Help pages, support page body, OAuth consent, invitation flows
-- Location comboboxes, rank-tracking config modal full copy
+- Location comboboxes
 - Marketing `web/` site (separate app)
 
 When extending: add keys to `locales/en.ts` first, mirror in `zh-TW.ts` (Traditional Taiwanese Chinese only), then replace hardcoded UI strings with `useT()` / `t()`.

@@ -24,6 +24,8 @@ import {
   isScheduledRankTrackingInterval,
   MAX_CONFIGS_PER_PROJECT,
   rankCheckCostApprovalError,
+  DEFAULT_RANK_TRACKING_DEVICES,
+  DEFAULT_RANK_TRACKING_SCHEDULE,
 } from "@/shared/rank-tracking";
 import {
   resolveKeywordDataLanguage,
@@ -54,7 +56,7 @@ async function createConfig(input: {
     input,
     input.projectMarket,
   );
-  const scheduleInterval = input.scheduleInterval ?? "weekly";
+  const scheduleInterval = input.scheduleInterval ?? DEFAULT_RANK_TRACKING_SCHEDULE;
   const nextCheckAt = isScheduledRankTrackingInterval(scheduleInterval)
     ? computeNextCheckAt(scheduleInterval)
     : null;
@@ -97,7 +99,7 @@ async function createConfig(input: {
     await RankTrackingRepository.updateConfig(existing.id, input.projectId, {
       isActive: true,
       languageCode,
-      devices: input.devices ?? "both",
+      devices: input.devices ?? DEFAULT_RANK_TRACKING_DEVICES,
       serpDepth: input.serpDepth,
       scheduleInterval,
       nextCheckAt,
@@ -117,7 +119,7 @@ async function createConfig(input: {
     locationCode,
     languageCode,
     locationName,
-    devices: input.devices ?? "both",
+    devices: input.devices ?? DEFAULT_RANK_TRACKING_DEVICES,
     serpDepth: input.serpDepth,
     scheduleInterval,
     nextCheckAt,

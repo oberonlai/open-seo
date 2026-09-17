@@ -1,5 +1,4 @@
-import { useEffect, useRef } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { sort } from "remeda";
 import { DashboardOnboarding } from "./DashboardOnboarding";
 import {
@@ -14,12 +13,10 @@ import { getStandardErrorMessage } from "@/client/lib/error-messages";
 import {
   getDashboardActivation,
   getDashboardOverview,
-  refreshDashboardBacklinkSnapshot,
 } from "@/serverFunctions/dashboard";
 
 export function DashboardPage({ projectId }: { projectId: string }) {
   const t = useT();
-  const queryClient = useQueryClient();
 
   const activationQuery = useQuery({
     queryKey: ["dashboardActivation", projectId],
@@ -33,26 +30,11 @@ export function DashboardPage({ projectId }: { projectId: string }) {
   const activation = activationQuery.data;
   const overview = overviewQuery.data;
 
-  // Visit-triggered backlink snapshot: fire once per page view when the
-  // overview reports a missing or stale snapshot for a project with a domain.
-  // The server re-checks freshness, so a stray double-fire costs nothing.
-  const refreshMutation = useMutation({
-    mutationFn: () => refreshDashboardBacklinkSnapshot({ data: { projectId } }),
-    onSuccess: () =>
-      void queryClient.invalidateQueries({
-        queryKey: ["dashboardOverview", projectId],
-      }),
-  });
-  const refreshFiredRef = useRef(false);
-  const needsSnapshot =
-    activation?.domain != null &&
-    overview !== undefined &&
-    (overview.backlinks === null || overview.backlinks.stale);
-  useEffect(() => {
-    if (!needsSnapshot || refreshFiredRef.current) return;
-    refreshFiredRef.current = true;
-    refreshMutation.mutate();
-  }, [needsSnapshot, refreshMutation]);
+  // Spend freeze: opening the dashboard must NOT auto-hit DataForSEO.
+  // Visit-triggered refreshDashboardBacklinkSnapshot was removed here;
+  // server ensureBacklinkSnapshot is also gated by
+  // OPENSEO_DATAFORSEO_AUTO_SPEND_DISABLED. Re-enable both to restore
+  // auto snapshots after top-up.
 
   if (activationQuery.isError) {
     return (
@@ -120,12 +102,12 @@ export function DashboardPage({ projectId }: { projectId: string }) {
       ? [
           {
             key: "backlinks",
-            hasData: overview?.backlinks != null || refreshMutation.isPending,
+            hasData: overview?.backlinks != null,
             node: (
               <BacklinkPulseCard
                 projectId={projectId}
                 backlinks={overview?.backlinks ?? null}
-                refreshing={refreshMutation.isPending}
+                refreshing={false}
               />
             ),
           },

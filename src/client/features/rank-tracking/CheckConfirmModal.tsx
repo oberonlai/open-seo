@@ -1,3 +1,4 @@
+import { useT } from "@/client/i18n";
 import { Loader2, Zap } from "lucide-react";
 import { Modal } from "@/client/components/Modal";
 import type { RankTrackingConfig } from "@/types/schemas/rank-tracking";
@@ -23,6 +24,7 @@ export function CheckConfirmModal({
   onRunNow: () => void;
   onCancel: () => void;
 }) {
+  const t = useT();
   const { costUsd } = estimateRankCheckCredits(
     keywordCount,
     devices,
@@ -60,7 +62,7 @@ export function CheckConfirmModal({
           <Zap className="size-5 text-primary" />
         </div>
         <div className="flex-1">
-          <p className="font-medium">Run Now</p>
+          <p className="font-medium">{t("rankTracking.runNow")}</p>
           <p className="text-xs text-base-content/60">
             Results in ~
             {liveTime < 60 ? `${liveTime}s` : `${Math.ceil(liveTime / 60)} min`}
@@ -73,7 +75,7 @@ export function CheckConfirmModal({
       </button>
 
       <button className="btn btn-ghost btn-sm self-center" onClick={onCancel}>
-        Cancel
+        {t("common.cancel")}
       </button>
     </Modal>
   );

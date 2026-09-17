@@ -1,3 +1,4 @@
+import { useT } from "@/client/i18n";
 import { CalendarDays, Loader2, SlidersHorizontal, Table } from "lucide-react";
 import { SegmentedToggle } from "@/client/components/SegmentedToggle";
 import { ExportMenu, MoreMenu } from "./ToolbarMenus";
@@ -44,6 +45,7 @@ export function RankTrackingTableToolbar({
   checkDisabled: boolean;
   hasData: boolean;
 }) {
+  const t = useT();
   return (
     <div className="shrink-0 flex flex-wrap items-center gap-2 px-4 py-2 border-y border-base-300">
       {/* History needs at least two checks to compare; until then the toggle
@@ -55,12 +57,12 @@ export function RankTrackingTableToolbar({
             {
               value: "table" as const,
               icon: <Table className="size-3.5" />,
-              label: "Latest",
+              label: t("rankTracking.latest"),
             },
             {
               value: "history" as const,
               icon: <CalendarDays className="size-3.5" />,
-              label: "History",
+              label: t("rankTracking.history"),
             },
           ]}
           value={viewMode}
@@ -71,10 +73,10 @@ export function RankTrackingTableToolbar({
       <button
         className={`btn btn-ghost btn-sm gap-1.5 ${showFilters ? "btn-active" : ""}`}
         onClick={onToggleFilters}
-        title="Toggle table filters"
+        title={t("common.toggleFilters")}
       >
         <SlidersHorizontal className="size-3.5" />
-        Filters
+        {t("common.refineResults")}
         {activeFilterCount > 0 && (
           <span className="badge badge-xs badge-primary border-0 text-primary-content">
             {activeFilterCount}

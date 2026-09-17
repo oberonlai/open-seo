@@ -6,6 +6,8 @@ import { getLatestResults } from "@/server/features/rank-tracking/services/rankT
 import { AppError, asAppError } from "@/server/lib/errors";
 import { captureServerEvent } from "@/server/lib/posthog";
 import { requireProjectContext } from "@/serverFunctions/middleware";
+import { getOptionalEnvValue } from "@/server/lib/runtime-env";
+import { isDataforseoAutoSpendDisabled } from "@/shared/dataforseo-auto-spend";
 import {
   getConfigsSchema,
   createConfigSchema,
@@ -93,8 +95,8 @@ export const createRankTrackingConfig = createServerFn({ method: "POST" })
         properties: {
           project_id: context.projectId,
           domain: data.domain,
-          devices: data.devices ?? "both",
-          schedule: data.scheduleInterval ?? "weekly",
+          devices: data.devices ?? "mobile",
+          schedule: data.scheduleInterval ?? "manual",
         },
       }),
     );
@@ -197,7 +199,12 @@ export const addTrackingKeywords = createServerFn({ method: "POST" })
     );
 
     let checkTriggered = false;
-    if (result.addedIds.length > 0) {
+    // Spend freeze: adding keywords must not auto-burn DataForSEO credits.
+    // Manual "Check Now" / metrics refresh remain available in the UI.
+    const autoSpendDisabled = isDataforseoAutoSpendDisabled(
+      await getOptionalEnvValue("OPENSEO_DATAFORSEO_AUTO_SPEND_DISABLED"),
+    );
+    if (result.addedIds.length > 0 && !autoSpendDisabled) {
       try {
         const triggerResult = await RankTrackingService.triggerCheck({
           configId: data.configId,
@@ -215,10 +222,14 @@ export const addTrackingKeywords = createServerFn({ method: "POST" })
       } catch (err) {
         logAutoActionFailure("auto-check", err);
       }
+    } else if (result.addedIds.length > 0 && autoSpendDisabled) {
+      console.info(
+        "[rank-tracking] auto-check skipped: OPENSEO_DATAFORSEO_AUTO_SPEND_DISABLED",
+      );
     }
 
     // Fetch keyword metrics (awaited so they're in the DB before client re-fetches)
-    if (result.added > 0) {
+    if (result.added > 0 && !autoSpendDisabled) {
       try {
         await RankTrackingService.refreshKeywordMetrics(
           data.configId,
@@ -228,6 +239,10 @@ export const addTrackingKeywords = createServerFn({ method: "POST" })
       } catch (err) {
         logAutoActionFailure("auto-metrics-refresh", err);
       }
+    } else if (result.added > 0 && autoSpendDisabled) {
+      console.info(
+        "[rank-tracking] auto-metrics-refresh skipped: OPENSEO_DATAFORSEO_AUTO_SPEND_DISABLED",
+      );
     }
 
     return { ...result, checkTriggered };

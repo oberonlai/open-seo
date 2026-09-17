@@ -16,6 +16,11 @@ import {
   projectIdSchema,
 } from "@/server/mcp/schemas";
 import { domainField } from "@/types/schemas/domain";
+import {
+  DEFAULT_RANK_TRACKING_DEVICES,
+  DEFAULT_RANK_TRACKING_SCHEDULE,
+  DEFAULT_RANK_TRACKING_SERP_DEPTH,
+} from "@/shared/rank-tracking";
 
 const inputSchema = {
   projectId: projectIdSchema,
@@ -44,7 +49,7 @@ const inputSchema = {
     .max(100)
     .multipleOf(10)
     .optional()
-    .describe("Number of Google results to inspect. Defaults to 40."),
+    .describe("Number of Google results to inspect. Defaults to 20."),
   scheduleInterval: z
     .enum(["manual", "daily", "weekly", "monthly"])
     .optional()
@@ -60,7 +65,7 @@ export const createRankTrackerTool = {
   config: {
     title: "Create rank tracker",
     description:
-      "Create a rank tracking configuration for a project. Creating an empty tracker uses no credits and starts no check, but daily, weekly, and monthly trackers will spend credits after keywords are added. The domain defaults to the project's domain; market defaults to the project's market; devices default to mobile, search depth to 40, and schedule to manual. Use estimate_rank_tracker_cost before adding keywords to a scheduled tracker or starting a live run. Call get_rank_tracker first to avoid duplicates.",
+      "Create a rank tracking configuration for a project. Creating an empty tracker uses no credits and starts no check, but daily, weekly, and monthly trackers will spend credits after keywords are added. The domain defaults to the project's domain; market defaults to the project's market; devices default to mobile, search depth to 20, and schedule to manual. Use estimate_rank_tracker_cost before adding keywords to a scheduled tracker or starting a live run. Call get_rank_tracker first to avoid duplicates.",
     inputSchema,
     outputSchema: z
       .object({
@@ -91,9 +96,9 @@ export const createRankTrackerTool = {
       locationCode: args.locationCode,
       languageCode: args.languageCode,
       locationName: args.locationName,
-      devices: args.devices ?? "mobile",
-      serpDepth: args.serpDepth ?? 40,
-      scheduleInterval: args.scheduleInterval ?? "manual",
+      devices: args.devices ?? DEFAULT_RANK_TRACKING_DEVICES,
+      serpDepth: args.serpDepth ?? DEFAULT_RANK_TRACKING_SERP_DEPTH,
+      scheduleInterval: args.scheduleInterval ?? DEFAULT_RANK_TRACKING_SCHEDULE,
     });
     waitUntil(
       captureServerEvent({

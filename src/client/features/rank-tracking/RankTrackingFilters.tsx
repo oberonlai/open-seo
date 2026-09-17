@@ -1,3 +1,4 @@
+import { useT } from "@/client/i18n";
 import { RotateCcw } from "lucide-react";
 import type { DomainListFilters, Filters } from "./RankTrackingFilters.logic";
 
@@ -19,6 +20,7 @@ export function FilterPanel({
   activeFilterCount: number;
   onReset: () => void;
 }) {
+  const t = useT();
   const update = (key: keyof Filters, value: string) =>
     setFilters({ ...filters, [key]: value });
 
@@ -26,7 +28,7 @@ export function FilterPanel({
     <div className="shrink-0 border-b border-base-300 bg-gradient-to-b from-base-100 to-base-200/30 px-4 py-3 space-y-3">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <p className="text-sm font-semibold">Refine results</p>
+          <p className="text-sm font-semibold">{t("rankTracking.refineResults")}</p>
           {activeFilterCount > 0 && (
             <span className="badge badge-xs badge-primary border-0 text-primary-content">
               {activeFilterCount} active
@@ -68,14 +70,14 @@ export function FilterPanel({
       </div>
       <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
         <RangeFilter
-          title="Desktop position"
+          title={t("rankTracking.desktopPosition")}
           minValue={filters.minDesktopPos}
           maxValue={filters.maxDesktopPos}
           onMinChange={(v) => update("minDesktopPos", v)}
           onMaxChange={(v) => update("maxDesktopPos", v)}
         />
         <RangeFilter
-          title="Mobile position"
+          title={t("rankTracking.mobilePosition")}
           minValue={filters.minMobilePos}
           maxValue={filters.maxMobilePos}
           onMinChange={(v) => update("minMobilePos", v)}
@@ -91,7 +93,7 @@ export function FilterPanel({
           onMaxChange={(v) => update("maxVolume", v)}
         />
         <RangeFilter
-          title="Keyword difficulty"
+          title={t("rankTracking.keywordDifficulty")}
           minValue={filters.minKd}
           maxValue={filters.maxKd}
           onMinChange={(v) => update("minKd", v)}
@@ -125,6 +127,7 @@ export function DomainListFilterBar({
   onChange: (filters: DomainListFilters) => void;
   onReset: () => void;
 }) {
+  const t = useT();
   return (
     <div className="border-t border-base-300 px-5 py-3">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-end">
@@ -160,7 +163,7 @@ export function DomainListFilterBar({
               }
             }}
           >
-            <option value="all">All devices</option>
+            <option value="all">{t("rankTracking.allDevices")}</option>
             {options.devices.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.label}
@@ -179,7 +182,7 @@ export function DomainListFilterBar({
               onChange({ ...filters, locationCode: event.target.value })
             }
           >
-            <option value="all">All countries</option>
+            <option value="all">{t("rankTracking.allCountries")}</option>
             {options.locations.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.label}

@@ -1,3 +1,4 @@
+import { useT } from "@/client/i18n";
 import { useEffect, useMemo } from "react";
 import { SlidersHorizontal } from "lucide-react";
 import type { OnChangeFn, SortingState } from "@tanstack/react-table";
@@ -81,6 +82,7 @@ export function BacklinksResultsCard({
   onTabChange: (tab: BacklinksSearchState["tab"]) => void;
   onViewChange: (view: "all" | undefined) => void;
 }) {
+  const t = useT();
   const {
     ratings: domainRatings,
     isLoading: isLoadingRatings,
@@ -166,7 +168,7 @@ export function BacklinksResultsCard({
         {activeTab === "backlinks" ? (
           <div
             role="tablist"
-            aria-label="Backlinks view"
+            aria-label={t("backlinks.title")}
             className="ml-auto tabs tabs-border tabs-xs w-fit"
           >
             <button
@@ -177,17 +179,17 @@ export function BacklinksResultsCard({
               title="Show each referring domain's strongest link; expand a row for the rest"
               onClick={() => onViewChange(undefined)}
             >
-              One per domain
+              {t("backlinks.onePerDomain")}
             </button>
             <button
               type="button"
               role="tab"
               aria-selected={view === "all"}
               className={`tab ${view === "all" ? "tab-active" : ""}`}
-              title="List every individual backlink"
+              title={t("backlinks.listEvery")}
               onClick={() => onViewChange("all")}
             >
-              All links
+              {t("backlinks.allLinks")}
             </button>
           </div>
         ) : null}

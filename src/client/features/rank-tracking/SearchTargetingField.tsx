@@ -1,3 +1,4 @@
+import { useT } from "@/client/i18n";
 import { useQuery } from "@tanstack/react-query";
 import { SerpLocationCombobox } from "@/client/components/SerpLocationCombobox";
 import { prewarmSerpLocations } from "@/serverFunctions/serp-locations";
@@ -17,6 +18,7 @@ export function SearchTargetingField({
   onLocationNameChange: (locationName: string | undefined) => void;
   countryCode: string;
 }) {
+  const t = useT();
   // Warm the server-side location cache the moment Local targeting is in
   // play, so the country list is hot before the first keystroke. Best-effort:
   // a failed warm just means the first search is slower, so no retries, and
@@ -31,7 +33,7 @@ export function SearchTargetingField({
   return (
     <div className="form-control">
       <label className="label">
-        <span className="label-text font-medium">Search Targeting</span>
+        <span className="label-text font-medium">{t("rankTracking.searchTargeting")}</span>
       </label>
       <div className="flex gap-2">
         <label className="flex items-center gap-2 cursor-pointer">
@@ -44,7 +46,7 @@ export function SearchTargetingField({
               onLocationNameChange(undefined);
             }}
           />
-          <span className="text-sm">National</span>
+          <span className="text-sm">{t("rankTracking.national")}</span>
         </label>
         <label className="flex items-center gap-2 cursor-pointer">
           <input
@@ -53,7 +55,7 @@ export function SearchTargetingField({
             checked={mode === "local"}
             onChange={() => onModeChange("local")}
           />
-          <span className="text-sm">Local</span>
+          <span className="text-sm">{t("rankTracking.local")}</span>
         </label>
       </div>
       <p className="text-xs text-base-content/50 mt-1.5">

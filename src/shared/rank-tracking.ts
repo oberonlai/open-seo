@@ -223,6 +223,19 @@ export function computeNextCheckAt(
 }
 
 // ---------------------------------------------------------------------------
+// Low-spend creation defaults (UI, service, MCP)
+// Prefer manual schedule + single device + shallow SERP until the operator
+// opts into recurring spend. Existing DB rows keep their stored settings.
+// ---------------------------------------------------------------------------
+
+export const DEFAULT_RANK_TRACKING_DEVICES: RankTrackingConfig["devices"] =
+  "mobile";
+/** One Google results page (10 organic results). */
+export const DEFAULT_RANK_TRACKING_SERP_DEPTH = 20;
+export const DEFAULT_RANK_TRACKING_SCHEDULE: RankTrackingConfig["scheduleInterval"] =
+  "manual";
+
+// ---------------------------------------------------------------------------
 // Display labels
 // ---------------------------------------------------------------------------
 
