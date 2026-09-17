@@ -6,8 +6,17 @@ export type LocalePreference = "system" | AppLocale;
 const LOCALE_STORAGE_KEY = "locale-preference";
 const LOCALE_CHANGE_EVENT = "locale-preference-change";
 
+/** Taiwan self-host default when the visitor has never chosen a language. */
+export const DEFAULT_LOCALE_PREFERENCE: LocalePreference = "zh-TW";
+
 function isAppLocale(value: string | null | undefined): value is AppLocale {
   return value === "en" || value === "zh-TW";
+}
+
+function isLocalePreference(
+  value: string | null | undefined,
+): value is LocalePreference {
+  return value === "system" || isAppLocale(value);
 }
 
 /** Map browser / Accept-Language tags to an app locale. */
@@ -62,23 +71,22 @@ export function matchBrowserLocale(
 }
 
 function readStoredPreference(): LocalePreference {
-  if (typeof window === "undefined") return "system";
+  if (typeof window === "undefined") return DEFAULT_LOCALE_PREFERENCE;
   try {
     const stored = window.localStorage.getItem(LOCALE_STORAGE_KEY);
-    if (isAppLocale(stored)) return stored;
-    return "system";
+    if (isLocalePreference(stored)) return stored;
+    // No preference yet → Traditional Chinese for this Taiwan self-host.
+    return DEFAULT_LOCALE_PREFERENCE;
   } catch {
-    return "system";
+    return DEFAULT_LOCALE_PREFERENCE;
   }
 }
 
 function writeStoredPreference(preference: LocalePreference) {
   try {
-    if (preference === "system") {
-      window.localStorage.removeItem(LOCALE_STORAGE_KEY);
-    } else {
-      window.localStorage.setItem(LOCALE_STORAGE_KEY, preference);
-    }
+    // Persist every choice, including "system", so first-visit default (zh-TW)
+    // stays distinct from an explicit System (browser) selection.
+    window.localStorage.setItem(LOCALE_STORAGE_KEY, preference);
   } catch {
     // localStorage can be unavailable in private browsing or strict modes.
   }
@@ -150,7 +158,7 @@ export function useLocalePreference(): {
   const localePreference = React.useSyncExternalStore(
     subscribeToLocalePreference,
     readStoredPreference,
-    () => "system" as LocalePreference,
+    () => DEFAULT_LOCALE_PREFERENCE,
   );
 
   const activeLocale = resolveLocale(localePreference);

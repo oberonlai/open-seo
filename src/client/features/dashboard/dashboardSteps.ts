@@ -1,48 +1,48 @@
 import { Bot, FolderPlus, Globe, Search, Users } from "lucide-react";
+import type { MessageKey } from "@/client/i18n";
 import type { DashboardActivation } from "@/server/features/dashboard/services/DashboardService";
 import type { DashboardSetupStep } from "@/types/schemas/dashboard";
 
 export const setupSteps: {
   id: DashboardSetupStep;
-  label: string;
-  detail: string;
+  labelKey: MessageKey;
+  detailKey: MessageKey;
   icon: typeof Globe;
 }[] = [
   {
     id: "domain",
-    label: "Add your website",
-    detail: "Set the website and country for this project.",
+    labelKey: "dashboard.step.domain.label",
+    detailKey: "dashboard.step.domain.detail",
     icon: Globe,
   },
   {
     id: "project",
-    label: "Working on multiple websites?",
-    detail:
-      "Create another project, or let your AI agent set up a list of sites.",
+    labelKey: "dashboard.step.project.label",
+    detailKey: "dashboard.step.project.detail",
     icon: FolderPlus,
   },
   {
     id: "competitor",
-    label: "Explore a competitor",
-    detail: "Find topics and links worth learning from.",
+    labelKey: "dashboard.step.competitor.label",
+    detailKey: "dashboard.step.competitor.detail",
     icon: Search,
   },
   {
     id: "mcp",
-    label: "Connect your AI agent",
-    detail: "Use OpenSEO inside Claude or your favorite agent.",
+    labelKey: "dashboard.step.mcp.label",
+    detailKey: "dashboard.step.mcp.detail",
     icon: Bot,
   },
   {
     id: "gsc",
-    label: "Connect Search Console",
-    detail: "Bring your real clicks and queries into view.",
+    labelKey: "dashboard.step.gsc.label",
+    detailKey: "dashboard.step.gsc.detail",
     icon: Search,
   },
   {
     id: "team",
-    label: "Invite a teammate",
-    detail: "Share the work, or keep things solo for now.",
+    labelKey: "dashboard.step.team.label",
+    detailKey: "dashboard.step.team.detail",
     icon: Users,
   },
 ];

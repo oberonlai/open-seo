@@ -9,6 +9,7 @@ import {
 } from "@/client/features/dashboard/DashboardCards";
 import { Ga4Card } from "@/client/features/dashboard/Ga4Card";
 import { WorkspaceMergeBanner } from "@/client/features/dashboard/WorkspaceMergeBanner";
+import { useT } from "@/client/i18n";
 import { getStandardErrorMessage } from "@/client/lib/error-messages";
 import {
   getDashboardActivation,
@@ -17,6 +18,7 @@ import {
 } from "@/serverFunctions/dashboard";
 
 export function DashboardPage({ projectId }: { projectId: string }) {
+  const t = useT();
   const queryClient = useQueryClient();
 
   const activationQuery = useQuery({
@@ -134,7 +136,7 @@ export function DashboardPage({ projectId }: { projectId: string }) {
   return (
     <div className="px-4 py-4 pb-24 md:px-6 md:py-6 md:pb-8">
       <div className="mx-auto flex max-w-5xl flex-col gap-5">
-        <h1 className="text-2xl font-semibold">Dashboard</h1>
+        <h1 className="text-2xl font-semibold">{t("dashboard.title")}</h1>
 
         <WorkspaceMergeBanner />
 

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Check, ChevronRight, RotateCcw } from "lucide-react";
 import { toast } from "sonner";
+import { useT } from "@/client/i18n";
 import { isHostedClientAuthMode } from "@/lib/auth-mode";
 import { getStandardErrorMessage } from "@/client/lib/error-messages";
 import { captureClientEvent } from "@/client/lib/posthog";
@@ -19,6 +20,7 @@ export function DashboardOnboarding({
   projectId: string;
   activation: DashboardActivation;
 }) {
+  const t = useT();
   const queryClient = useQueryClient();
   const [selected, setSelected] = useState<DashboardSetupStep | null>(() =>
     getGoogleLinkError("gsc") ||
@@ -43,10 +45,7 @@ export function DashboardOnboarding({
     },
     onError: (error) =>
       toast.error(
-        getStandardErrorMessage(
-          error,
-          "Couldn’t save your preference. Try again.",
-        ),
+        getStandardErrorMessage(error, t("dashboard.setupSaveError")),
       ),
   });
   const steps = setupSteps.filter(
@@ -66,18 +65,20 @@ export function DashboardOnboarding({
 
   return (
     <section
-      aria-label="Onboarding checklist"
+      aria-label={t("dashboard.setupAriaLabel")}
       className="overflow-hidden rounded-xl border border-base-300 bg-base-100"
     >
       <header className="border-b border-base-300 px-5 py-5 sm:px-6">
-        <h2 className="text-lg font-semibold">Set up your workspace</h2>
+        <h2 className="text-lg font-semibold">{t("dashboard.setupTitle")}</h2>
         <p className="mt-1 text-sm text-base-content/65">
-          Add your website, connect your tools, and invite your team.
+          {t("dashboard.setupSubtitle")}
         </p>
       </header>
       {remaining.map((item) => {
         const active = selected === item.id;
         const Icon = item.icon;
+        const label = t(item.labelKey);
+        const detail = t(item.detailKey);
         return (
           <div key={item.id} className="border-b border-base-300">
             <button
@@ -97,14 +98,14 @@ export function DashboardOnboarding({
                 <Icon className="size-4" />
               </span>
               <span className="min-w-0 flex-1">
-                <span className="block text-sm font-medium">{item.label}</span>
+                <span className="block text-sm font-medium">{label}</span>
                 <span className="mt-1 hidden text-xs text-base-content/65 sm:block">
-                  {item.detail}
+                  {detail}
                 </span>
               </span>
               {item.id === "domain" && (
                 <span className="hidden text-xs text-primary sm:block">
-                  Start here
+                  {t("dashboard.setupStartHere")}
                 </span>
               )}
               <ChevronRight
@@ -129,8 +130,8 @@ export function DashboardOnboarding({
                       }
                     >
                       {item.id === "project"
-                        ? "I only need one project"
-                        : "Skip for now"}
+                        ? t("dashboard.setupOnlyOneProject")
+                        : t("dashboard.setupSkip")}
                     </button>
                   </div>
                 </div>
@@ -143,28 +144,32 @@ export function DashboardOnboarding({
         <details className="group border-t border-base-300">
           <summary className="flex cursor-pointer list-none items-center gap-2 px-5 py-4 text-sm text-base-content/65 sm:px-6 [&::-webkit-details-marker]:hidden">
             <ChevronRight className="size-4 transition-transform group-open:rotate-90" />
-            {deferred.length} saved for later
+            {t("dashboard.setupSavedForLater", { count: deferred.length })}
           </summary>
           <ul className="space-y-1 px-5 pb-4 sm:px-6">
-            {deferred.map((item) => (
-              <li
-                key={item.id}
-                className="flex items-center justify-between gap-3 rounded-lg bg-base-200/40 px-3 py-2"
-              >
-                <span className="text-sm">{item.label}</span>
-                <button
-                  type="button"
-                  aria-label={`Restore ${item.label}`}
-                  className="btn btn-ghost btn-sm shrink-0"
-                  disabled={dismiss.isPending}
-                  onClick={() =>
-                    dismiss.mutate({ step: item.id, dismissed: false })
-                  }
+            {deferred.map((item) => {
+              const label = t(item.labelKey);
+              return (
+                <li
+                  key={item.id}
+                  className="flex items-center justify-between gap-3 rounded-lg bg-base-200/40 px-3 py-2"
                 >
-                  <RotateCcw className="size-3.5" /> Restore
-                </button>
-              </li>
-            ))}
+                  <span className="text-sm">{label}</span>
+                  <button
+                    type="button"
+                    aria-label={t("dashboard.setupRestoreAria", { label })}
+                    className="btn btn-ghost btn-sm shrink-0"
+                    disabled={dismiss.isPending}
+                    onClick={() =>
+                      dismiss.mutate({ step: item.id, dismissed: false })
+                    }
+                  >
+                    <RotateCcw className="size-3.5" />{" "}
+                    {t("dashboard.setupRestore")}
+                  </button>
+                </li>
+              );
+            })}
           </ul>
         </details>
       )}
@@ -172,7 +177,7 @@ export function DashboardOnboarding({
         <details className="group border-t border-base-300">
           <summary className="flex cursor-pointer list-none items-center gap-2 px-5 py-4 text-sm sm:px-6 [&::-webkit-details-marker]:hidden">
             <Check className="size-4 text-success" />
-            {completed.length} completed
+            {t("dashboard.setupCompleted", { count: completed.length })}
             <ChevronRight className="ml-auto size-4 text-base-content/60 transition-transform group-open:rotate-90" />
           </summary>
           <ul className="space-y-3 px-5 pb-5 sm:px-6">
@@ -182,7 +187,7 @@ export function DashboardOnboarding({
                 className="flex items-center gap-3 text-sm text-base-content/65"
               >
                 <Check className="size-4 shrink-0 text-success" />
-                {item.label}
+                {t(item.labelKey)}
               </li>
             ))}
           </ul>
