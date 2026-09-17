@@ -8,6 +8,7 @@ import { captureClientEvent } from "@/client/lib/posthog";
 import { isHostedClientAuthMode } from "@/lib/auth-mode";
 import { getGscGrantStatus } from "@/serverFunctions/gsc";
 import { dismissGscNudge } from "@/serverFunctions/onboarding";
+import { useT } from "@/client/i18n";
 
 /**
  * One-time re-engagement prompt nudging users who finished onboarding *before*
@@ -26,6 +27,7 @@ export function GscReEngagementModal({
   projectId: string | null;
   suppressed: boolean;
 }) {
+  const t = useT();
   const hosted = isHostedClientAuthMode();
   const queryClient = useQueryClient();
   const [closed, setClosed] = React.useState(false);
@@ -103,7 +105,7 @@ export function GscReEngagementModal({
     >
       <div className="space-y-1">
         <h2 id="gsc-nudge-title" className="text-lg font-semibold">
-          New: Connect Google Search Console
+          {t("gsc.reengageTitle")}
         </h2>
         <p className="text-sm text-base-content/70">
           Bring your real clicks, impressions, and rankings into OpenSEO and
@@ -113,7 +115,7 @@ export function GscReEngagementModal({
 
       <div className="mt-2 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
         <button type="button" className="btn btn-ghost" onClick={handleDismiss}>
-          Maybe later
+          {t("gsc.maybeLater")}
         </button>
         <button
           type="button"
@@ -121,7 +123,7 @@ export function GscReEngagementModal({
           className="inline-flex items-center justify-center gap-2.5 rounded-lg border border-base-300 bg-base-100 px-4 py-2.5 text-sm font-semibold text-base-content shadow-sm transition hover:bg-base-200 hover:shadow focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
         >
           <GoogleGlyph className="size-[18px]" />
-          Connect with Google
+          {t("gsc.connectWithGoogle")}
         </button>
       </div>
     </Modal>

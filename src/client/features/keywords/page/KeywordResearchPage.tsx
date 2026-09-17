@@ -25,6 +25,7 @@ import { KeywordResearchLoadingState } from "./KeywordResearchLoadingState";
 import { KeywordResearchResults } from "./KeywordResearchResults";
 import { KeywordResearchSearchBar } from "./KeywordResearchSearchBar";
 import type { KeywordResearchControllerState } from "./types";
+import { useT } from "@/client/i18n";
 
 type ControllerProps = Omit<KeywordResearchControllerInput, "onFormSubmit">;
 type Props = Omit<
@@ -38,6 +39,7 @@ function isKeywordSearchTab(tab: SearchTab): tab is KeywordSearchTab {
 }
 
 export function KeywordResearchPage(input: Props) {
+  const t = useT();
   const setSearchParams = useKeywordSearchParams();
   const projectId = input.projectId;
   const { locationCode, displayedLocationCode, setPreferredLocationCode } =
@@ -180,9 +182,9 @@ export function KeywordResearchPage(input: Props) {
     <div className="px-4 py-4 md:px-6 md:py-6 pb-24 md:pb-8 overflow-auto">
       <div className="mx-auto flex max-w-7xl flex-col gap-5">
         <div>
-          <h1 className="text-2xl font-semibold">Keyword Research</h1>
+          <h1 className="text-2xl font-semibold">{t("keywords.title")}</h1>
           <p className="text-sm text-base-content/70">
-            Discover keyword ideas, search demand, and ranking opportunities.
+            {t("keywords.subtitle")}
           </p>
         </div>
 
@@ -196,7 +198,7 @@ export function KeywordResearchPage(input: Props) {
               onClick={showRecentSearches}
             >
               <ArrowLeft className="size-4" />
-              Recent searches
+              {t("common.recentSearches")}
             </button>
             <SearchTabStrip
               projectId={projectId}

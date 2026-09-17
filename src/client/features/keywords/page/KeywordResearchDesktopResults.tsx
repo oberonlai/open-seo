@@ -38,6 +38,7 @@ import {
   TableBulkActionButton,
   TableBulkExportMenu,
 } from "@/client/components/table/TableBulkActionBar";
+import { useT } from "@/client/i18n";
 
 const MONTH_SHORT_LABELS = [
   "Jan",
@@ -120,6 +121,7 @@ function DesktopKeywordPanel({ controller }: Props) {
 }
 
 function DesktopTableCard({ controller }: Props) {
+  const t = useT();
   const {
     activeFilterCount,
     filteredRows,
@@ -171,7 +173,7 @@ function DesktopTableCard({ controller }: Props) {
         <button
           className={`btn btn-ghost btn-sm gap-1.5 ${showFilters ? "btn-active" : ""}`}
           onClick={() => controller.setShowFilters((current) => !current)}
-          title="Toggle table filters"
+          title={t("common.toggleFilters")}
         >
           <SlidersHorizontal className="size-3.5" />
           Filters
@@ -192,7 +194,7 @@ function DesktopTableCard({ controller }: Props) {
             className={`btn btn-ghost btn-sm gap-1 ${!canExport ? "btn-disabled" : ""}`}
           >
             <Download className="size-3.5" />
-            <span className="hidden lg:inline">Export</span>
+            <span className="hidden lg:inline">{t("common.export")}</span>
             <ChevronDown className="size-3 opacity-60" />
           </div>
           <ul
@@ -202,13 +204,13 @@ function DesktopTableCard({ controller }: Props) {
             <li>
               <button onClick={handleExportToSheets} disabled={!canExport}>
                 <Sheet className="size-4" />
-                Export to Sheets
+                {t("common.exportSheets")}
               </button>
             </li>
             <li>
               <button onClick={controller.exportCsv} disabled={!canExport}>
                 <FileDown className="size-4" />
-                Export CSV
+                {t("common.exportCsv")}
               </button>
             </li>
           </ul>
@@ -224,17 +226,17 @@ function DesktopTableCard({ controller }: Props) {
               icon={<Save className="size-3.5" />}
               onClick={controller.handleSaveKeywords}
             >
-              Save Keywords
+              {t("keywords.saveKeywords")}
             </TableBulkActionButton>
             <TableBulkExportMenu
               actions={[
                 {
-                  label: "Export to Sheets",
+                  label: t("common.exportSheets"),
                   icon: <Sheet className="size-4" />,
                   onClick: handleExportSelectionToSheets,
                 },
                 {
-                  label: "Export CSV",
+                  label: t("common.exportCsv"),
                   icon: <FileDown className="size-4" />,
                   onClick: handleExportSelectionCsv,
                 },
@@ -271,13 +273,14 @@ function DesktopTableCard({ controller }: Props) {
 }
 
 function DesktopFilters({ controller }: Props) {
+  const t = useT();
   const { activeFilterCount, filtersForm } = controller;
 
   return (
     <div className="shrink-0 border-b border-base-300 bg-gradient-to-b from-base-100 to-base-200/30 px-4 py-3 space-y-3">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2">
-          <p className="text-sm font-semibold">Refine table results</p>
+          <p className="text-sm font-semibold">{t("common.refineTableResults")}</p>
           {activeFilterCount > 0 ? (
             <span className="badge badge-xs badge-primary border-0 text-primary-content">
               {activeFilterCount} active
@@ -299,33 +302,33 @@ function DesktopFilters({ controller }: Props) {
           form={filtersForm}
           name="include"
           label="Include Terms"
-          placeholder="audit, checker, template"
+          placeholder={t("keywords.includePlaceholder")}
         />
         <FilterTextInput
           form={filtersForm}
           name="exclude"
           label="Exclude Terms"
-          placeholder="jobs, salary, course"
+          placeholder={t("keywords.excludePlaceholder")}
         />
       </div>
 
       <div className="grid grid-cols-1 gap-2 lg:grid-cols-3">
         <FilterRangeInputs
           form={filtersForm}
-          title="Search Volume"
+          title={t("seo.searchVolume")}
           minName="minVol"
           maxName="maxVol"
         />
         <FilterRangeInputs
           form={filtersForm}
-          title="CPC (USD)"
+          title={t("seo.cpcUsd")}
           minName="minCpc"
           maxName="maxCpc"
           step="0.01"
         />
         <FilterRangeInputs
           form={filtersForm}
-          title="Difficulty"
+          title={t("seo.difficulty")}
           minName="minKd"
           maxName="maxKd"
         />

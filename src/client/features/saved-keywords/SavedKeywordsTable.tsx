@@ -22,6 +22,7 @@ import {
   formatSavedKeywordDate,
   formatSavedKeywordNumber,
 } from "./savedKeywordsUtils";
+import { useT } from "@/client/i18n";
 
 const columnHelper = createColumnHelper<SavedKeywordRow>();
 
@@ -42,13 +43,14 @@ export function SavedKeywordsTable({
   onRowSelectionChange: OnChangeFn<RowSelectionState>;
   onSortingChange: OnChangeFn<SortingState>;
 }) {
+  const t = useT();
   const selectAnchorRef = useSelectionAnchor();
   const columns = useMemo<ColumnDef<SavedKeywordRow>[]>(
     () => [
       makeSelectionColumn<SavedKeywordRow>(selectAnchorRef),
       columnHelper.accessor("keyword", {
         header: ({ column }) => (
-          <SortableHeader column={column} label="Keyword" />
+          <SortableHeader column={column} label={t("seo.keyword")} />
         ),
         cell: ({ getValue }) => (
           <span className="font-medium">{getValue()}</span>
@@ -56,12 +58,12 @@ export function SavedKeywordsTable({
       }),
       columnHelper.accessor("searchVolume", {
         header: ({ column }) => (
-          <SortableHeader column={column} label="Volume" />
+          <SortableHeader column={column} label={t("seo.volume")} />
         ),
         cell: ({ getValue }) => formatSavedKeywordNumber(getValue()),
       }),
       columnHelper.accessor("cpc", {
-        header: ({ column }) => <SortableHeader column={column} label="CPC" />,
+        header: ({ column }) => <SortableHeader column={column} label={t("seo.cpc")} />,
         cell: ({ getValue }) => {
           const value = getValue();
           return value == null ? "-" : `$${value.toFixed(2)}`;
@@ -71,8 +73,8 @@ export function SavedKeywordsTable({
         header: ({ column }) => (
           <SortableHeader
             column={column}
-            label="Competition"
-            helpText="Paid-search competition from Google Ads (0-1): higher means more advertisers bidding."
+            label={t("seo.competition")}
+            helpText={t("seo.competitionHelp")}
           />
         ),
         cell: ({ getValue }) => {
@@ -84,14 +86,14 @@ export function SavedKeywordsTable({
         header: ({ column }) => (
           <SortableHeader
             column={column}
-            label="Difficulty"
-            helpText="Organic ranking difficulty (0-100): higher means harder to reach Google's top 10."
+            label={t("seo.difficulty")}
+            helpText={t("seo.difficultyHelp")}
           />
         ),
         cell: ({ getValue }) => <DifficultyBadge value={getValue()} />,
       }),
       columnHelper.accessor("intent", {
-        header: () => "Intent",
+        header: () => t("seo.intent"),
         cell: ({ getValue }) => (
           <IntentBadge intent={normalizeIntent(getValue())} />
         ),
@@ -99,14 +101,14 @@ export function SavedKeywordsTable({
       }),
       columnHelper.display({
         id: "tags",
-        header: () => "Tags",
+        header: () => t("seo.tags"),
         cell: ({ row }) => <TagList tags={row.original.tags} />,
         enableSorting: false,
         meta: { cellClassName: "min-w-40 max-w-64" },
       }),
       columnHelper.accessor("fetchedAt", {
         header: ({ column }) => (
-          <SortableHeader column={column} label="Last Fetched" />
+          <SortableHeader column={column} label={t("savedKeywords.lastFetched")} />
         ),
         cell: ({ getValue }) => (
           <span className="text-xs text-base-content/55">
@@ -115,7 +117,7 @@ export function SavedKeywordsTable({
         ),
       }),
     ],
-    [selectAnchorRef],
+    [selectAnchorRef, t],
   );
   const table = useAppTable({
     data: rows,
@@ -190,13 +192,14 @@ function SavedKeywordsEmptyState({
 }: {
   hasActiveFilters: boolean;
 }) {
+  const t = useT();
   return (
     <div className="py-12 text-center text-sm text-base-content/55">
       <Search className="mx-auto mb-2 size-8 opacity-40" />
       <p>
         {hasActiveFilters
-          ? "No saved keywords match the current filters."
-          : "No saved keywords yet. Use the Keyword Research page to find and save keywords."}
+          ? t("savedKeywords.noFilterMatch")
+          : t("savedKeywords.empty")}
       </p>
     </div>
   );

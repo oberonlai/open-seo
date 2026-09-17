@@ -8,6 +8,7 @@ import {
 } from "./BacklinksPageCharts";
 import type { BacklinksOverviewData } from "./backlinksPageTypes";
 import { formatRelativeTimestamp } from "./backlinksPageUtils";
+import { useT } from "@/client/i18n";
 
 type SummaryStat = { label: string; value: string; description: string };
 
@@ -129,17 +130,18 @@ function SummaryStatsGrid({
 }
 
 function TrendPanels({ data }: { data: BacklinksOverviewData }) {
+  const t = useT();
   return (
     <>
       <TrendCard
-        title="Backlink growth"
-        description="Backlinks and referring domains over the last year"
+        title={t("backlinks.growth")}
+        description={t("backlinks.growthDesc")}
       >
         <BacklinksTrendChart data={data.trends} />
       </TrendCard>
       <TrendCard
-        title="New vs lost"
-        description="Backlink acquisition and attrition"
+        title={t("backlinks.newVsLost")}
+        description={t("backlinks.newVsLostDesc")}
       >
         <BacklinksNewLostChart data={data.newLostTrends} />
       </TrendCard>

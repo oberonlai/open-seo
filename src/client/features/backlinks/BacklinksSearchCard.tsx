@@ -13,6 +13,7 @@ import {
   parseResearchTarget,
 } from "@/shared/researchScope";
 import type { BacklinksSearchState } from "./backlinksPageTypes";
+import { useT } from "@/client/i18n";
 
 type SearchDraft = Pick<BacklinksSearchState, "target" | "scope">;
 
@@ -54,6 +55,7 @@ export function BacklinksSearchCard({
   initialValues: SearchDraft;
   onSubmit: (values: SearchDraft) => void;
 }) {
+  const t = useT();
   const [userSelectedScope, setUserSelectedScope] = useState(false);
   const form = useForm({
     defaultValues: initialValues,
@@ -97,7 +99,7 @@ export function BacklinksSearchCard({
                     >
                       <Search className="size-4 text-base-content/60" />
                       <input
-                        placeholder="Enter a domain or URL"
+                        placeholder={t("backlinks.placeholder")}
                         value={field.state.value}
                         onChange={(event) => {
                           const nextTarget = event.target.value;

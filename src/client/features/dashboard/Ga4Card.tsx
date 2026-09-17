@@ -20,6 +20,7 @@ import {
   formatCtr,
 } from "@/client/features/search-performance/SearchPerformanceColumns";
 import { getGa4DashboardReport } from "@/serverFunctions/ga4";
+import { useT } from "@/client/i18n";
 
 function formatTrendDay(date: string): string {
   // Construct in local time: Date.parse("2026-08-01") is UTC midnight, which
@@ -73,6 +74,7 @@ export function Ga4Card({
   projectId: string;
   connected: boolean;
 }) {
+  const t = useT();
   const reportQuery = useQuery({
     queryKey: ["dashboardGa4Report", projectId],
     queryFn: () => getGa4DashboardReport({ data: { projectId } }),
@@ -89,8 +91,8 @@ export function Ga4Card({
 
   return (
     <CardShell
-      title="Organic traffic"
-      stamp="Google Analytics · last 28 days"
+      title={t("dashboard.organicTraffic")}
+      stamp={t("dashboard.ga4Stamp")}
       action={
         <Link
           to="/p/$projectId/settings"
@@ -126,7 +128,7 @@ export function Ga4Card({
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-3">
               <Stat
-                label="Sessions"
+                label={t("dashboard.sessions")}
                 value={statValue(report.totals.sessions, formatCount)}
                 sub={statDelta(
                   report.totals.sessions,
@@ -134,7 +136,7 @@ export function Ga4Card({
                 )}
               />
               <Stat
-                label="Active users"
+                label={t("dashboard.activeUsers")}
                 value={statValue(report.totals.activeUsers, formatCount)}
                 sub={statDelta(
                   report.totals.activeUsers,
@@ -142,11 +144,11 @@ export function Ga4Card({
                 )}
               />
               <Stat
-                label="Engagement rate"
+                label={t("dashboard.engagementRate")}
                 value={statValue(report.totals.engagementRate, formatCtr)}
               />
               <Stat
-                label="Key events"
+                label={t("dashboard.keyEvents")}
                 value={statValue(report.totals.keyEvents, formatCount)}
                 sub={statDelta(
                   report.totals.keyEvents,

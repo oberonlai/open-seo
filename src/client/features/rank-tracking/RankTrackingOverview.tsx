@@ -16,6 +16,7 @@ import {
   TrendRangeToggle,
   useChartWidth,
 } from "./RankTrackingTrendChart";
+import { useT } from "@/client/i18n";
 
 const BUCKETS = [
   { key: "top3", label: "Top 3", color: "#16a34a" },
@@ -39,6 +40,7 @@ export function RankTrackingOverview({
   projectId: string;
   configId: string;
 }) {
+  const t = useT();
   const [sinceDays, setSinceDays] = useState(730);
 
   const { data: trend, isLoading: trendLoading } = useQuery({
@@ -67,7 +69,7 @@ export function RankTrackingOverview({
     <div className="px-4 pt-4 pb-4">
       <div className="rounded-lg border border-base-300 p-3 space-y-2">
         <div className="flex items-center justify-between gap-2">
-          <span className="text-sm font-medium">Position distribution</span>
+          <span className="text-sm font-medium">{t("rankTracking.positionDistribution")}</span>
           <TrendRangeToggle value={sinceDays} onChange={setSinceDays} />
         </div>
 

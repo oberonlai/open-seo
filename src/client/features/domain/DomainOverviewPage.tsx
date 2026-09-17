@@ -54,6 +54,7 @@ import type {
   DomainSortMode,
   SortOrder,
 } from "@/client/features/domain/types";
+import { useT } from "@/client/i18n";
 
 type Props = {
   projectId: string;
@@ -456,6 +457,7 @@ export function DomainOverviewPage({
   navigate,
   onShowRecentSearches,
 }: Props) {
+  const t = useT();
   const state = useDomainOverviewState({
     navigate,
     routeState,
@@ -556,10 +558,9 @@ export function DomainOverviewPage({
     <div className="px-4 py-4 md:px-6 md:py-6 pb-24 md:pb-8 overflow-auto">
       <div className="mx-auto max-w-7xl space-y-4">
         <div>
-          <h1 className="text-2xl font-semibold">Domain Overview</h1>
+          <h1 className="text-2xl font-semibold">{t("domain.title")}</h1>
           <p className="text-sm text-base-content/70">
-            Analyze any domain&apos;s SEO profile: traffic, keywords, and
-            backlinks.
+            {t("domain.subtitle")}
           </p>
         </div>
 

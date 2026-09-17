@@ -7,6 +7,7 @@ import type {
   ComparePeriod,
   RankTrackingConfig,
 } from "@/types/schemas/rank-tracking";
+import { useT } from "@/client/i18n";
 
 const COMPARE_PERIODS: ReadonlySet<string> = new Set([
   "1d",
@@ -41,6 +42,7 @@ export function RankTrackingDetailHeader({
   onEdit: () => void;
   onToggleAddKeywords: () => void;
 }) {
+  const t = useT();
   return (
     <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2 px-4 pt-4 pb-3">
       <div>
@@ -98,14 +100,14 @@ export function RankTrackingDetailHeader({
         <div className="hidden sm:block h-6 w-px bg-base-300" />
         <button className="btn btn-sm gap-1" onClick={onEdit}>
           <Settings className="size-3.5" />
-          Configure
+          {t("rankTracking.configure")}
         </button>
         <button
           className="btn btn-primary btn-sm gap-1"
           onClick={onToggleAddKeywords}
         >
           <Plus className="size-3.5" />
-          Add Keywords
+          {t("rankTracking.addKeywords")}
         </button>
       </div>
     </div>

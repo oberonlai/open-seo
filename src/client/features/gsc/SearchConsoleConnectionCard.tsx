@@ -17,6 +17,7 @@ import {
   type GscSiteSelection,
 } from "@/client/features/gsc/SitePicker";
 import { disconnectGsc, listGscSites, setGscSite } from "@/serverFunctions/gsc";
+import { useT } from "@/client/i18n";
 
 const GRANT_STATUS_KEY = ["gscGrantStatus"];
 
@@ -27,6 +28,7 @@ export function SearchConsoleConnectionCard({
   projectId: string;
   returnTo?: string;
 }) {
+  const t = useT();
   const hosted = isHostedClientAuthMode();
   const queryClient = useQueryClient();
   const { picking, setPicking, linkAccount, linking } = useGooglePickerResume(
@@ -92,7 +94,7 @@ export function SearchConsoleConnectionCard({
         current ? { ...current, ...saved } : current,
       );
       captureClientEvent("gsc:property_select");
-      toast.success("Search Console connected");
+      toast.success(t("gsc.connected"));
       queryClient.removeQueries({ queryKey: ["gscSites", projectId] });
       void queryClient.invalidateQueries({ queryKey: connectionKey });
       setPicking(false);
@@ -119,7 +121,7 @@ export function SearchConsoleConnectionCard({
   const disconnectMutation = useMutation({
     mutationFn: () => disconnectGsc({ data: { projectId } }),
     onSuccess: () => {
-      toast.success("Search Console disconnected from this project");
+      toast.success(t("gsc.disconnected"));
       queryClient.setQueryData(connectionKey, (current: typeof connection) =>
         current ? { ...current, connected: false } : current,
       );
@@ -148,7 +150,7 @@ export function SearchConsoleConnectionCard({
 
   return (
     <IntegrationConnectionCard
-      title="Google Search Console"
+      title={t("gsc.title")}
       icon={<GoogleSearchConsoleLogo className="size-5" />}
       status={
         connectionQuery.isPending || (connectionQuery.isError && !connection)
@@ -164,7 +166,7 @@ export function SearchConsoleConnectionCard({
       {connectionQuery.isPending ? (
         <div
           role="status"
-          aria-label="Loading connection"
+          aria-label={t("gsc.loadingConnection")}
           className="space-y-3 animate-pulse"
         >
           <div className="h-4 w-2/3 rounded bg-base-200" />
@@ -173,14 +175,14 @@ export function SearchConsoleConnectionCard({
       ) : connectionQuery.isError && !connection ? (
         <div role="alert" className="space-y-3 text-sm">
           <p className="text-error">
-            Couldn't check this project's connection.
+            {t("gsc.checkFailed")}
           </p>
           <button
             type="button"
             className="btn btn-ghost btn-sm"
             onClick={() => void connectionQuery.refetch()}
           >
-            Try again
+            {t("common.tryAgain")}
           </button>
         </div>
       ) : selfHostedNeedsSetup ? (

@@ -2,6 +2,7 @@ import { Clock, History, X } from "lucide-react";
 import { Globe } from "lucide-react";
 import type { DomainHistoryItem } from "@/client/features/domain/types";
 import { RESEARCH_SCOPE_LABELS } from "@/shared/researchScope";
+import { useT } from "@/client/i18n";
 
 type Props = {
   history: DomainHistoryItem[];
@@ -16,6 +17,7 @@ export function DomainHistorySection({
   onRemoveHistoryItem,
   onSelectHistoryItem,
 }: Props) {
+  const t = useT();
   if (!historyLoaded) {
     return null;
   }
@@ -25,7 +27,7 @@ export function DomainHistorySection({
       <section className="rounded-2xl border border-dashed border-base-300 bg-base-100/70 p-6 text-center text-base-content/55 space-y-2">
         <Globe className="size-9 mx-auto opacity-35" />
         <p className="text-base font-medium text-base-content/80">
-          Enter a domain to get started
+          {t("domain.emptyTitle")}
         </p>
       </section>
     );
@@ -37,7 +39,9 @@ export function DomainHistorySection({
         <div className="flex items-center gap-2">
           <History className="size-4 text-base-content/45" />
           <span className="text-sm text-base-content/60">
-            {history.length} recent search{history.length !== 1 ? "es" : ""}
+            {history.length === 1
+              ? t("common.recentSearchCount", { count: history.length })
+              : t("common.recentSearchCountPlural", { count: history.length })}
           </span>
         </div>
       </div>

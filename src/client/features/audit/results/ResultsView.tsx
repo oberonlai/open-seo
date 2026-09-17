@@ -16,6 +16,7 @@ import {
   ExportDropdown,
   PerformanceTable,
 } from "@/client/features/audit/results/ResultsTables";
+import { useT } from "@/client/i18n";
 
 type ResultsTab = "issues" | "pages" | "performance";
 
@@ -289,6 +290,7 @@ function StatsStrip({
     avgAccessibility: number | null;
   };
 }) {
+  const t = useT();
   const severityCounts = useMemo(() => {
     const counts = { critical: 0, warning: 0, info: 0 };
     for (const issue of issues) {
@@ -298,9 +300,9 @@ function StatsStrip({
   }, [issues]);
 
   const items: StatItem[] = [
-    { label: "Pages crawled", value: String(pagesCrawled) },
+    { label: t("audit.pagesCrawled"), value: String(pagesCrawled) },
     {
-      label: "Issues found",
+      label: t("audit.issuesFound"),
       value: String(issues.length),
       valueClass: issues.length === 0 ? "text-success" : "",
       sub: issues.length > 0 && (

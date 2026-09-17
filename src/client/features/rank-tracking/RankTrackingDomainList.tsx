@@ -26,6 +26,7 @@ import {
   getDomainListFilterOptions,
   type DomainListFilters,
 } from "./RankTrackingFilters";
+import { useT } from "@/client/i18n";
 
 type ConfigSummary = Awaited<
   ReturnType<typeof getRankTrackingConfigSummaries>
@@ -43,6 +44,7 @@ export function RankTrackingDomainList({
   projectId: string;
   onAddDomain: () => void;
 }) {
+  const t = useT();
   const queryClient = useQueryClient();
   const [archiveTarget, setArchiveTarget] = useState<ConfigSummary | null>(
     null,
@@ -78,7 +80,7 @@ export function RankTrackingDomainList({
       void queryClient.invalidateQueries({
         queryKey: ["rankTrackingConfigs", projectId],
       });
-      toast.success("Domain archived");
+      toast.success(t("rankTracking.domainArchived"));
     },
   });
 
@@ -86,13 +88,13 @@ export function RankTrackingDomainList({
     <div className="card bg-base-100 border border-base-300">
       <div className="card-body gap-0 p-0">
         <div className="flex items-center justify-between px-5 pt-4 pb-3">
-          <h2 className="text-sm font-semibold">Tracked Domains</h2>
+          <h2 className="text-sm font-semibold">{t("rankTracking.trackedDomains")}</h2>
           <button
             className="btn btn-primary btn-sm gap-1"
             onClick={onAddDomain}
           >
             <Plus className="size-3.5" />
-            Add Domain
+            {t("rankTracking.addDomain")}
           </button>
         </div>
         {(allSummaries.length >= FILTER_BAR_MIN_DOMAINS ||
@@ -121,10 +123,10 @@ export function RankTrackingDomainList({
                 <Globe className="size-5 text-base-content/40" />
               </div>
               <p className="text-sm font-medium text-base-content/70">
-                No tracked domains yet
+                {t("rankTracking.emptyTitle")}
               </p>
               <p className="text-xs text-base-content/40">
-                Add a domain to start monitoring keyword rankings over time.
+                {t("rankTracking.emptyBody")}
               </p>
             </div>
           ) : filteredSummaries.length === 0 ? (
@@ -134,10 +136,10 @@ export function RankTrackingDomainList({
               </div>
               <div className="space-y-1">
                 <p className="text-sm font-medium text-base-content/70">
-                  No matching tracked domains
+                  {t("rankTracking.noMatchTitle")}
                 </p>
                 <p className="text-xs text-base-content/40">
-                  Try clearing search or adjusting filters.
+                  {t("rankTracking.noMatchBody")}
                 </p>
               </div>
               <button
@@ -145,7 +147,7 @@ export function RankTrackingDomainList({
                 onClick={() => setFilters(EMPTY_DOMAIN_LIST_FILTERS)}
                 disabled={activeFilterCount === 0}
               >
-                Clear filters
+                {t("common.clearFilters")}
               </button>
             </div>
           ) : (

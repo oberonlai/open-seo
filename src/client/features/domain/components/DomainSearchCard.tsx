@@ -8,6 +8,7 @@ import { LABS_LOCATION_OPTIONS } from "@/client/features/keywords/locations";
 import { LocationSelect } from "@/client/components/LocationSelect";
 import { ResearchScopeSelect } from "@/client/components/ResearchScopeSelect";
 import type { ResearchScope } from "@/shared/researchScope";
+import { useT } from "@/client/i18n";
 
 type Props = {
   controlsForm: DomainOverviewControlsForm;
@@ -28,6 +29,7 @@ export function DomainSearchCard({
   onSortChange,
   onLocationChange,
 }: Props) {
+  const t = useT();
   return (
     <div className="card bg-base-100 border border-base-300">
       <div className="card-body gap-4">
@@ -46,7 +48,7 @@ export function DomainSearchCard({
                   <Search className="size-4 text-base-content/60" />
                   <input
                     className="grow min-w-0"
-                    placeholder="Enter a domain or URL"
+                    placeholder={t("domain.placeholder")}
                     value={field.state.value}
                     onChange={(event) => {
                       field.handleChange(event.target.value);

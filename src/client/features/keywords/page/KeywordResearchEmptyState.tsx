@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { Clock, Globe, History, Search, X } from "lucide-react";
 import { LOCATIONS } from "@/client/features/keywords/utils";
 import type { KeywordResearchControllerState } from "./types";
+import { useT } from "@/client/i18n";
 
 type Props = {
   controller: KeywordResearchControllerState;
@@ -23,6 +24,7 @@ function NoResultsState({
 }: {
   controller: KeywordResearchControllerState;
 }) {
+  const t = useT();
   const { lastSearchKeyword, lastSearchLocationCode } = controller;
 
   return (
@@ -31,18 +33,14 @@ function NoResultsState({
         <Globe className="size-10 mx-auto text-base-content/40" />
         <div className="space-y-2">
           <p className="text-lg font-semibold text-base-content">
-            Not enough keyword data for this query yet
+            {t("keywords.noDataTitle")}
           </p>
           <p className="text-sm text-base-content/70">
-            We could not find keyword opportunities for
-            <span className="font-medium text-base-content">
-              {` "${lastSearchKeyword}" `}
-            </span>
-            in
-            <span className="font-medium text-base-content">
-              {` ${LOCATIONS[lastSearchLocationCode] || "this location"}`}
-            </span>
-            .
+            {t("keywords.noDataBody", {
+              keyword: lastSearchKeyword,
+              location:
+                LOCATIONS[lastSearchLocationCode] || t("common.thisLocation"),
+            })}
           </p>
         </div>
       </div>
@@ -57,6 +55,7 @@ function SearchHistoryState({
   controller: KeywordResearchControllerState;
   projectId: string;
 }) {
+  const t = useT();
   const { history, historyLoaded, removeHistoryItem } = controller;
 
   if (!historyLoaded) {
@@ -71,8 +70,11 @@ function SearchHistoryState({
             <div className="flex items-center gap-2">
               <History className="size-4 text-base-content/45" />
               <span className="text-sm text-base-content/60">
-                {history.length} recent search
-                {history.length !== 1 ? "es" : ""}
+                {history.length === 1
+                  ? t("common.recentSearchCount", { count: history.length })
+                  : t("common.recentSearchCountPlural", {
+                      count: history.length,
+                    })}
               </span>
             </div>
           </div>
@@ -126,11 +128,10 @@ function SearchHistoryState({
         <section className="rounded-2xl border border-dashed border-base-300 bg-base-100/70 p-6 text-center text-base-content/50 space-y-3">
           <Search className="size-10 mx-auto opacity-40" />
           <p className="text-lg font-medium text-base-content/80">
-            Enter a keyword to get started
+            {t("keywords.emptyTitle")}
           </p>
           <p className="text-sm max-w-md mx-auto">
-            Search for any keyword to see volume, difficulty, CPC, and related
-            keyword ideas.
+            {t("keywords.emptyBody")}
           </p>
         </section>
       )}
