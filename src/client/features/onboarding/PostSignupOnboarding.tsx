@@ -14,6 +14,7 @@ import {
 } from "@/client/features/onboarding/onboardingModel";
 import { AgentSetup } from "@/client/features/ai-mcp/AgentSetup";
 import { SearchConsoleOnboardingStep } from "@/client/features/onboarding/SearchConsoleOnboardingStep";
+import { onboardingOptionKey, useT } from "@/client/i18n";
 
 type PostSignupOnboardingProps = {
   step: number;
@@ -38,6 +39,7 @@ export function PostSignupOnboarding({
   isSaving,
   accountMenu,
 }: PostSignupOnboardingProps) {
+  const t = useT();
   const canContinue =
     step === 0
       ? answers.selectedInterests.length > 0
@@ -57,8 +59,8 @@ export function PostSignupOnboarding({
         <fieldset disabled={isSaving}>
           {step === 0 ? (
             <OnboardingChoiceGroup
-              title="What brings you here?"
-              description="Pick up to three things you want to work on."
+              title={t("onboarding.interestsTitle")}
+              description={t("onboarding.interestsDesc")}
               maxSelections={3}
               options={[...INTEREST_OPTIONS]}
               selectedValues={answers.selectedInterests}
@@ -77,7 +79,7 @@ export function PostSignupOnboarding({
             />
           ) : step === 1 ? (
             <OnboardingChoiceGroup
-              title="Who are you doing SEO for?"
+              title={t("onboarding.workForTitle")}
               options={[...WORK_FOR_OPTIONS]}
               selectedValues={answers.workFor ? [answers.workFor] : []}
               onToggle={(workFor) => updateAnswers({ workFor })}
@@ -85,7 +87,7 @@ export function PostSignupOnboarding({
               onOtherChange={(workForOther) => updateAnswers({ workForOther })}
               followUp={{
                 showForValue: CLIENT_WORK_FOR,
-                label: "About how many client sites do you work on?",
+                label: t("onboarding.clientSitesLabel"),
                 options: [...CLIENT_WEBSITE_COUNT_OPTIONS],
                 value: answers.clientWebsiteCount,
                 onChange: (clientWebsiteCount) =>
@@ -94,7 +96,7 @@ export function PostSignupOnboarding({
             />
           ) : step === 2 ? (
             <OnboardingChoiceGroup
-              title="How did you find OpenSEO?"
+              title={t("onboarding.sourceTitle")}
               options={[...SOURCE_OPTIONS]}
               selectedValues={answers.source ? [answers.source] : []}
               onToggle={(source) => updateAnswers({ source })}
@@ -123,7 +125,7 @@ export function PostSignupOnboarding({
                   className="flex min-h-10 items-center gap-1.5 text-xs text-base-content/60 hover:text-base-content"
                   onClick={onBack}
                 >
-                  <ArrowLeft className="size-3.5" /> Back
+                  <ArrowLeft className="size-3.5" /> {t("common.back")}
                 </button>
               ) : (
                 <button
@@ -131,7 +133,7 @@ export function PostSignupOnboarding({
                   className="btn btn-ghost"
                   onClick={onSkip}
                 >
-                  Skip
+                  {t("common.skip")}
                 </button>
               )}
               <div className="flex items-center gap-2">
@@ -141,7 +143,7 @@ export function PostSignupOnboarding({
                     className="btn btn-ghost btn-sm text-base-content/55"
                     onClick={onSkip}
                   >
-                    Skip
+                    {t("common.skip")}
                   </button>
                 )}
                 <button
@@ -150,7 +152,7 @@ export function PostSignupOnboarding({
                   disabled={!canContinue || isSaving}
                   onClick={onNext}
                 >
-                  Continue <ArrowRight className="size-4" />
+                  {t("common.continue")} <ArrowRight className="size-4" />
                 </button>
               </div>
             </div>
@@ -190,6 +192,12 @@ function OnboardingChoiceGroup({
     onChange: (value: string) => void;
   };
 }) {
+  const t = useT();
+  const labelFor = (option: string) => {
+    const key = onboardingOptionKey(option);
+    if (key) return t(key);
+    return ONBOARDING_OPTION_LABELS[option] ?? option;
+  };
   const isOtherSelected = selectedValues.includes("Other");
   const showFollowUp =
     followUp !== undefined && selectedValues.includes(followUp.showForValue);
@@ -228,9 +236,7 @@ function OnboardingChoiceGroup({
                 >
                   {selected && <Check className="size-3" />}
                 </span>
-                <span className="capitalize">
-                  {ONBOARDING_OPTION_LABELS[option] ?? option}
-                </span>
+                <span className="capitalize">{labelFor(option)}</span>
               </button>
 
               {showFollowUpHere && followUp ? (
@@ -259,7 +265,7 @@ function OnboardingChoiceGroup({
                             )
                           }
                         >
-                          {followUpOption}
+                          {labelFor(followUpOption)}
                         </button>
                       );
                     })}

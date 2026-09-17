@@ -1,4 +1,5 @@
 import { createFileRoute, Link, Outlet } from "@tanstack/react-router";
+import { useT } from "@/client/i18n";
 import { isHostedClientAuthMode } from "@/lib/auth-mode";
 
 export const Route = createFileRoute("/_app/settings")({
@@ -9,11 +10,17 @@ export const Route = createFileRoute("/_app/settings")({
 // signed-in user (theme, API keys, analytics); Organization = the active org
 // (team). Billing keeps its own page — it's linked from paywalls all over.
 function SettingsLayout() {
+  const t = useT();
   const tabs = [
-    { to: "/settings" as const, label: "Personal", exact: true },
+    { to: "/settings" as const, label: t("settings.personal"), exact: true },
     // Self-host has no memberships — the organization tab would 404.
     ...(isHostedClientAuthMode()
-      ? [{ to: "/settings/organization" as const, label: "Organization" }]
+      ? [
+          {
+            to: "/settings/organization" as const,
+            label: t("settings.organization"),
+          },
+        ]
       : []),
   ];
 
@@ -21,7 +28,9 @@ function SettingsLayout() {
     <div className="h-full overflow-auto bg-base-100">
       <div className="mx-auto w-full max-w-4xl space-y-8 p-4 py-8 pb-24 sm:p-6 md:py-12 md:pb-12">
         <div className="space-y-4">
-          <h1 className="text-2xl font-bold tracking-tight">Settings</h1>
+          <h1 className="text-2xl font-bold tracking-tight">
+            {t("settings.title")}
+          </h1>
           <div role="tablist" className="tabs tabs-border">
             {tabs.map((tab) => (
               <Link

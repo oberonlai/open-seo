@@ -3,6 +3,7 @@ import {
   getCurrentAuthRedirect,
   getOAuthSignedQuery,
 } from "@/lib/auth-redirect";
+import { useT } from "@/client/i18n";
 import { isHostedClientAuthMode } from "@/lib/auth-mode";
 
 export const authRedirectSearchSchema = z.object({
@@ -26,7 +27,7 @@ export function useAuthPageState(redirect: string | undefined) {
 
 export function AuthMethodChooser({
   googleLabel,
-  emailLabel = "Continue with email",
+  emailLabel,
   isBusy,
   disabled,
   onContinueWithGoogle,
@@ -39,6 +40,8 @@ export function AuthMethodChooser({
   onContinueWithGoogle: () => void;
   onContinueWithEmail: () => void;
 }) {
+  const t = useT();
+  const resolvedEmailLabel = emailLabel ?? t("auth.continueWithEmail");
   return (
     <div className="space-y-3">
       <button
@@ -48,7 +51,7 @@ export function AuthMethodChooser({
         disabled={disabled || isBusy}
       >
         <GoogleLogo />
-        {isBusy ? "Opening Google..." : googleLabel}
+        {isBusy ? t("auth.openingGoogle") : googleLabel}
       </button>
 
       <button
@@ -57,7 +60,7 @@ export function AuthMethodChooser({
         onClick={onContinueWithEmail}
         disabled={disabled || isBusy}
       >
-        {emailLabel}
+        {resolvedEmailLabel}
       </button>
     </div>
   );

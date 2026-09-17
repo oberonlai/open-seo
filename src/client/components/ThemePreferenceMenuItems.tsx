@@ -1,46 +1,50 @@
 import { Monitor, Moon, Sun } from "lucide-react";
 import { type ThemePreference, useThemePreference } from "@/client/lib/theme";
+import { useT } from "@/client/i18n";
+import type { MessageKey } from "@/client/i18n";
 
 const THEME_OPTIONS: {
   value: ThemePreference;
-  label: string;
+  labelKey: MessageKey;
   icon: typeof Sun;
 }[] = [
-  { value: "system", label: "System", icon: Monitor },
-  { value: "light", label: "Light", icon: Sun },
-  { value: "dark", label: "Dark", icon: Moon },
+  { value: "system", labelKey: "theme.system", icon: Monitor },
+  { value: "light", labelKey: "theme.light", icon: Sun },
+  { value: "dark", labelKey: "theme.dark", icon: Moon },
 ];
 
 export function ThemePreferenceMenuItems() {
+  const t = useT();
   const { themePreference, setThemePreference } = useThemePreference();
 
   return (
     <>
       <li className="menu-title pt-2">
-        <span>Theme</span>
+        <span>{t("theme.title")}</span>
       </li>
 
       <li>
         <div
           role="radiogroup"
-          aria-label="Theme preference"
+          aria-label={t("theme.preference")}
           className="flex gap-0.5 rounded-lg bg-base-200 p-0.5"
         >
           {THEME_OPTIONS.map((option) => {
             const isActive = option.value === themePreference;
             const Icon = option.icon;
+            const label = t(option.labelKey);
 
             return (
               <div
                 key={option.value}
                 className="tooltip tooltip-bottom flex flex-1 before:whitespace-nowrap"
-                data-tip={option.label}
+                data-tip={label}
               >
                 <button
                   type="button"
                   role="radio"
                   aria-checked={isActive}
-                  aria-label={option.label}
+                  aria-label={label}
                   className={`flex flex-1 cursor-pointer items-center justify-center rounded-md px-2.5 py-1.5 transition-colors ${
                     isActive
                       ? "bg-base-100 text-base-content shadow-sm"

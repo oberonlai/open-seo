@@ -12,11 +12,12 @@ import {
 } from "lucide-react";
 import { linkOptions } from "@tanstack/react-router";
 import { GoogleGlyphMuted } from "@/client/features/gsc/GoogleGlyph";
+import type { MessageKey } from "@/client/i18n";
 
 const projectNavItems = [
   {
     to: "/p/$projectId" as const,
-    label: "Dashboard",
+    labelKey: "nav.dashboard" satisfies MessageKey,
     icon: LayoutDashboard,
     // Without exact matching, the index path is a prefix of every project
     // route and the Dashboard item would render active everywhere.
@@ -24,60 +25,60 @@ const projectNavItems = [
   },
   {
     to: "/p/$projectId/keywords" as const,
-    label: "Keyword Research",
+    labelKey: "nav.keywordResearch" satisfies MessageKey,
     icon: Search,
   },
   {
     to: "/p/$projectId/saved" as const,
-    label: "Saved Keywords",
+    labelKey: "nav.savedKeywords" satisfies MessageKey,
     icon: Bookmark,
   },
   {
     to: "/p/$projectId/rank-tracking" as const,
-    label: "Rank Tracking",
+    labelKey: "nav.rankTracking" satisfies MessageKey,
     icon: TrendingUp,
   },
   {
     to: "/p/$projectId/search-performance" as const,
-    label: "GSC Insights",
+    labelKey: "nav.gscInsights" satisfies MessageKey,
     icon: GoogleGlyphMuted,
   },
   {
     to: "/p/$projectId/domain" as const,
-    label: "Domain Overview",
+    labelKey: "nav.domainOverview" satisfies MessageKey,
     icon: Globe,
   },
   {
     to: "/p/$projectId/backlinks" as const,
-    label: "Backlinks",
+    labelKey: "nav.backlinks" satisfies MessageKey,
     icon: Link2,
   },
   {
     to: "/p/$projectId/audit" as const,
-    label: "Site Audit",
+    labelKey: "nav.siteAudit" satisfies MessageKey,
     icon: ClipboardCheck,
   },
   {
     to: "/p/$projectId/brand-lookup" as const,
-    label: "Brand Lookup",
+    labelKey: "nav.brandLookup" satisfies MessageKey,
     icon: Sparkles,
   },
   {
     to: "/p/$projectId/prompt-explorer" as const,
-    label: "Prompt Explorer",
+    labelKey: "nav.promptExplorer" satisfies MessageKey,
     icon: MessageSquare,
   },
 ] as const;
 
 const aiNavItem = linkOptions({
   to: "/ai" as const,
-  label: "AI & MCP",
+  labelKey: "nav.aiMcp" satisfies MessageKey,
   icon: Bot,
 });
 
 // Always-visible sidebar group (not project-scoped, unlike the groups below).
 export const connectNavGroup = {
-  label: "Connect",
+  labelKey: "nav.connect" satisfies MessageKey,
   items: [aiNavItem],
 };
 
@@ -100,11 +101,11 @@ export function getProjectNavGroups(projectId: string) {
 
   return [
     {
-      label: "Overview",
+      labelKey: "nav.overview" satisfies MessageKey,
       items: [byPath("/p/$projectId")],
     },
     {
-      label: "Research",
+      labelKey: "nav.research" satisfies MessageKey,
       items: [
         byPath("/p/$projectId/keywords"),
         byPath("/p/$projectId/domain"),
@@ -114,7 +115,7 @@ export function getProjectNavGroups(projectId: string) {
       ],
     },
     {
-      label: "My Site",
+      labelKey: "nav.mySite" satisfies MessageKey,
       items: [
         byPath("/p/$projectId/search-performance"),
         byPath("/p/$projectId/rank-tracking"),

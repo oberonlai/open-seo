@@ -12,6 +12,7 @@ import {
   TurnstileWidget,
   useTurnstileCaptcha,
 } from "@/client/features/auth/TurnstileWidget";
+import { useT } from "@/client/i18n";
 import { getFieldError, getFormError } from "@/client/lib/forms";
 import { captureClientEvent } from "@/client/lib/posthog";
 import { authClient } from "@/lib/auth-client";
@@ -49,6 +50,7 @@ export const Route = createFileRoute("/_auth/sign-up")({
 });
 
 function SignUpPage() {
+  const t = useT();
   const search = Route.useSearch();
   const navigate = useNavigate();
   const { redirectTo, isHostedMode } = useAuthPageState(search.redirect);
@@ -206,7 +208,7 @@ function SignUpPage() {
       {!showEmailForm ? (
         <>
           <AuthMethodChooser
-            googleLabel="Continue with Google"
+            googleLabel={t("auth.continueWithGoogle")}
             disabled={!isHostedMode}
             isBusy={google.isStarting}
             onContinueWithGoogle={() => {

@@ -23,6 +23,14 @@ import {
 import { ProjectSwitcher } from "@/client/features/projects/ProjectSwitcher";
 import { SamSidebarPanel } from "@/client/features/sam/SamSidebarPanel";
 import { ThemePreferenceMenuItems } from "@/client/components/ThemePreferenceMenuItems";
+import { LanguageMenuItems, useT } from "@/client/i18n";
+import type { MessageKey } from "@/client/i18n";
+
+// Nav config stores MessageKey strings; linkOptions widens them to string.
+function asNavLabelKey(key: string): MessageKey {
+  // oxlint-disable-next-line typescript-eslint/no-unsafe-type-assertion -- nav labelKey values are MessageKeys
+  return key as MessageKey;
+}
 import { closeDropdown } from "@/client/lib/dropdown";
 import { signOutAndRedirect, useSession } from "@/lib/auth-client";
 import { isHostedClientAuthMode } from "@/lib/auth-mode";
@@ -82,6 +90,7 @@ function SidebarNavLink({
 }
 
 export function Sidebar({ projectId, onNavigate, onClose }: SidebarProps) {
+  const t = useT();
   const navGroups = [
     ...(projectId ? getProjectNavGroups(projectId) : []),
     connectNavGroup,
@@ -138,7 +147,7 @@ export function Sidebar({ projectId, onNavigate, onClose }: SidebarProps) {
             type="button"
             onClick={onClose}
             className="btn btn-ghost btn-sm btn-circle"
-            aria-label="Close sidebar"
+            aria-label={t("common.closeSidebar")}
           >
             <X className="h-5 w-5" />
           </button>
@@ -159,13 +168,13 @@ export function Sidebar({ projectId, onNavigate, onClose }: SidebarProps) {
           <div role="tablist" className="tabs tabs-border w-full">
             <SidebarViewTab
               icon={LayoutGrid}
-              label="Browse"
+              label={t("nav.browse")}
               active={view === "browse"}
               onClick={openBrowse}
             />
             <SidebarViewTab
               icon={MessageCircle}
-              label="Chat"
+              label={t("nav.chat")}
               active={view === "chat"}
               onClick={openChat}
             />
@@ -178,17 +187,17 @@ export function Sidebar({ projectId, onNavigate, onClose }: SidebarProps) {
       ) : (
         <nav className="min-h-0 flex-1 overflow-y-auto px-2 py-2">
           {navGroups.map((group) => (
-            <div key={group.label} className="mb-1">
+            <div key={group.labelKey} className="mb-1">
               <div className="px-3 pb-1 pt-3 text-xs font-semibold uppercase tracking-wider text-base-content/40">
-                {group.label}
+                {t(asNavLabelKey(group.labelKey))}
               </div>
               {group.items.map((item) => {
-                const { icon, label, ...linkProps } = item;
+                const { icon, labelKey, ...linkProps } = item;
                 return (
                   <SidebarNavLink
                     key={linkProps.to}
                     icon={icon}
-                    label={label}
+                    label={t(asNavLabelKey(labelKey))}
                     onNavigate={onNavigate}
                     linkProps={linkProps}
                   />
@@ -230,6 +239,7 @@ function SidebarViewTab({
 }
 
 function SidebarFooter({ onNavigate }: { onNavigate?: () => void }) {
+  const t = useT();
   const { data: session } = useSession();
   const isHostedMode = isHostedClientAuthMode();
   const email = session?.user?.email;
@@ -264,7 +274,7 @@ function SidebarFooter({ onNavigate }: { onNavigate?: () => void }) {
     <div className="shrink-0 border-t border-base-300 px-2 py-2 pb-safe">
       <SidebarNavLink
         icon={CircleHelp}
-        label="Help & Community"
+        label={t("nav.helpCommunity")}
         onNavigate={onNavigate}
         linkProps={{ to: "/support" }}
       />
@@ -275,7 +285,7 @@ function SidebarFooter({ onNavigate }: { onNavigate?: () => void }) {
             type="button"
             tabIndex={0}
             className={`${navItemClass} w-full`}
-            aria-label="Open account menu"
+            aria-label={t("common.openAccountMenu")}
           >
             <User className="h-4 w-4 shrink-0" />
             <span className="truncate" data-ph-mask>
@@ -290,7 +300,7 @@ function SidebarFooter({ onNavigate }: { onNavigate?: () => void }) {
               <>
                 <li className="menu-title flex flex-row items-center gap-1.5 max-w-full">
                   <ArrowLeftRight className="h-3 w-3" />
-                  Organization
+                  {t("nav.organization")}
                 </li>
                 {organizations.map((organization) => (
                   <li key={organization.organizationId}>
@@ -321,18 +331,19 @@ function SidebarFooter({ onNavigate }: { onNavigate?: () => void }) {
             <li>
               <Link to="/settings" onClick={closeMenu}>
                 <Settings className="h-4 w-4" />
-                Settings
+                {t("nav.settings")}
               </Link>
             </li>
             {isHostedMode ? (
               <li>
                 <Link to={BILLING_ROUTE} onClick={closeMenu}>
                   <CreditCard className="h-4 w-4" />
-                  Billing
+                  {t("nav.billing")}
                 </Link>
               </li>
             ) : null}
             <ThemePreferenceMenuItems />
+            <LanguageMenuItems />
             {isHostedMode ? (
               <>
                 <li
@@ -346,7 +357,7 @@ function SidebarFooter({ onNavigate }: { onNavigate?: () => void }) {
                     onClick={() => signOutAndRedirect()}
                   >
                     <LogOut className="h-4 w-4" />
-                    Sign out
+                    {t("common.signOut")}
                   </button>
                 </li>
               </>
@@ -356,7 +367,7 @@ function SidebarFooter({ onNavigate }: { onNavigate?: () => void }) {
       ) : (
         <SidebarNavLink
           icon={Settings}
-          label="Settings"
+          label={t("nav.settings")}
           onNavigate={onNavigate}
           linkProps={{ to: "/settings" }}
         />
